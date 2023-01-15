@@ -1,0 +1,114 @@
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "TerraformRequiredPermissions",
+            "Effect": "Allow",
+            "Action": [
+                "ecr:GetAuthorizationToken",
+                "ec2:*",
+                "rds:DeleteDBSubnetGroup",
+                "rds:CreateDBInstance",
+                "rds:CreateDBSubnetGroup",
+                "rds:DeleteDBInstance",
+                "rds:DescribeDBSubnetGroups",
+                "rds:DescribeDBInstances",
+                "rds:ListTagsForResource",
+                "rds:ModifyDBInstance",
+                "iam:CreateServiceLinkedRole",
+                "iam:CreateRole",
+                "iam:GetInstanceProfile",
+                "iam:DeletePolicy",
+                "iam:DetachRolePolicy",
+                "iam:GetRole",
+                "iam:AddRoleToInstanceProfile",
+                "iam:ListInstanceProfilesForRole",
+                "iam:ListAttachedRolePolicies",
+                "iam:DeleteRole",
+                "iam:TagRole",
+                "iam:PassRole",
+                "iam:GetPolicyVersion",
+                "iam:GetPolicy",
+                "iam:CreatePolicyVersion",
+                "iam:DeletePolicyVersion",
+                "iam:CreateInstanceProfile",
+                "iam:DeleteInstanceProfile",
+                "iam:ListPolicyVersions",
+                "iam:AttachRolePolicy",
+                "iam:CreatePolicy",
+                "iam:RemoveRoleFromInstanceProfile",
+                "logs:CreateLogGroup",
+                "logs:DeleteLogGroup",
+                "logs:DescribeLogGroups",
+                "logs:ListTagsLogGroup",
+                "logs:TagLogGroup",
+                "ecs:DeleteCluster",
+                "ecs:CreateService",
+                "ecs:UpdateService",
+                "ecs:DeregisterTaskDefinition",
+                "ecs:DescribeClusters",
+                "ecs:RegisterTaskDefinition",
+                "ecs:DeleteService",
+                "ecs:DescribeTaskDefinition",
+                "ecs:DescribeServices",
+                "ecs:CreateCluster",
+                "elasticloadbalancing:*",
+                "s3:*",
+                "acm:DeleteCertificate",
+                "acm:DescribeCertificate",
+                "acm:ListTagsForCertificate",
+                "acm:RequestCertificate",
+                "acm:AddTagsToCertificate",
+                "route53:*"
+            ],
+            "Resource": "*"
+
+        },
+        {
+          "Sid": "AllowListS3StateBucket",
+          "Effect": "Allow",
+          "Action": "s3:ListBucket",
+          "Resource": "arn:aws:s3:::django-rest-api-devops-tfstate"
+        },
+        {
+          "Sid": "AllowS3StateBucketAccess",
+          "Effect": "Allow",
+          "Action": ["s3:GetObject", "s3:PutObject"],
+          "Resource": "arn:aws:s3:::django-rest-api-devops-tfstate/*"
+        },
+        {
+            "Sid": "LimitEC2Size",
+            "Effect": "Deny",
+            "Action": "ec2:RunInstances",
+            "Resource": "arn:aws:ec2:*:*:instance/*",
+            "Condition": {
+                "ForAnyValue:StringNotLike": {
+                    "ec2:InstanceType": [
+                        "t2.micro"
+                    ]
+                }
+            }
+        },
+        {
+            "Sid": "AllowECRAccess",
+            "Effect": "Allow",
+            "Action": [
+                "ecr:*"
+            ],
+            "Resource": "arn:aws:ecr:us-east-1:*:repository/django-rest-api"
+        },
+        {
+            "Sid": "AllowStateLockingAccess",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:PutItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:GetItem"
+            ],
+            "Resource": [
+                "arn:aws:dynamodb:*:*:table/django-rest-api-devops-tf-state-lock"
+            ]
+        }
+    ]
+}
